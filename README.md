@@ -15,11 +15,13 @@ source: _[Fundamentals of Aerospace Navigation and Guidance](https://www.cambrid
 
 Differential equation solver:  
 [Python/Scipy _solv_ivp_](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp)
+or could implement as a discrete time system...
 
 Player strategies (for choosing heading angles):
 - Minimize/maximize distance
 - Move in tangential direction of attacker
-- Neural network for choosing strategy (maybe...)
+- Knowing previous history of other player or not
+- Neural network / machine learning for creating strategy using sklearn libraries (maybe...)
 
 Algorithm:
 1. Initialize with some set of parameters.
