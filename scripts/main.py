@@ -18,7 +18,7 @@ import animationScript as animate
 # const[0] = speed of pursuer
 # const[1] = speed of evader
 # const[2] = turn radius of pursuer
-const = np.array([0.01, 0.005, 0.1]) #global parameters for this system
+const = np.array([0.01, 0.006, 0.1]) #global parameters for this system
 
 
 def dXdt(x0, input):

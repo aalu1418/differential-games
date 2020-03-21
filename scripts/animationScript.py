@@ -52,7 +52,7 @@ def animate(x0_data, y0_data, x1_data, y1_data):
 
     # call the animator.  blit=True means only re-draw the parts that have changed.
     anim = animation.FuncAnimation(fig, animate, init_func=init,
-                                   frames=len(x0_data), interval=50, blit=True, repeat=False)
+                                   frames=len(x0_data), interval=25, blit=True, repeat=False)
     plt.show()
 
 if __name__=='__main__':

@@ -28,3 +28,6 @@ Algorithm:
 2. Simulate first step using ODE solver.
 3. Choose heading angles using strategy.
 4. Repeat 2 and 3 until time runs our or collision occurs.
+
+Current Bug:
+- `arctan2` function has a range of `[-pi, pi]` which causes issues if the `|angle| > pi` (hence, the occasional wavy behavior when the pursuer misses)
