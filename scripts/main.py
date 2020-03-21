@@ -86,4 +86,5 @@ if __name__=='__main__':
     # plt.axis('equal')
     # plt.show()
 
+    # animate.animate(X[:,0], X[:,1], X[:,3], X[:,4], "homChauffeur")
     animate.animate(X[:,0], X[:,1], X[:,3], X[:,4])

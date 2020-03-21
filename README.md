@@ -4,7 +4,9 @@ Simulating differential games (specifically pursuit/evasion scenarios) using pyt
 
 ### Homicidal Chauffeur Problem - 2 Body Pursuit/Evasion
 
-Differential equations:
+<img src="./figures/homicidal_chauffeur/homChauffeur.gif" height=200/>
+
+**Differential equations**
 <div style="display:flex;flex-direction:row">
 <img src="./figures/homicidal_chauffeur/system.png" height=200/>
 <div style="display:flex;flex-direction:column"><img src="./figures/homicidal_chauffeur/driver.png" width=100/>
@@ -13,21 +15,21 @@ Differential equations:
 
 source: _[Fundamentals of Aerospace Navigation and Guidance](https://www.cambridge.org/core/books/fundamentals-of-aerospace-navigation-and-guidance/introduction-to-differential-games/60EE260EF7F997C3A7E1E97C6FCD8BB1)_ by Kabamba & Girard
 
-Differential equation solver:  
+**Differential equation solver**  
 [Python/Scipy _solv_ivp_](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp)
 or could implement as a discrete time system...
 
-Player strategies (for choosing heading angles):
+**Player strategies** (for choosing heading angles)
 - Minimize/maximize distance
 - Move in tangential direction of attacker
 - Knowing previous history of other player or not
 - Neural network / machine learning for creating strategy using sklearn libraries (maybe...)
 
-Algorithm:
+**Algorithms**
 1. Initialize with some set of parameters.
 2. Simulate first step using ODE solver.
 3. Choose heading angles using strategy.
 4. Repeat 2 and 3 until time runs our or collision occurs.
 
-Current Bug:
+**Current Bugs**
 - `arctan2` function has a range of `[-pi, pi]` which causes issues if the `|angle| > pi` (hence, the occasional wavy behavior when the pursuer misses)

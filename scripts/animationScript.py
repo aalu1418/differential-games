@@ -4,7 +4,7 @@ from numpy import random
 
 # https://stackoverflow.com/questions/23049762/matplotlib-multiple-animate-multiple-lines
 
-def animate(x0_data, y0_data, x1_data, y1_data):
+def animate(x0_data, y0_data, x1_data, y1_data, savename = ""):
     fig = plt.figure()
     # ax = plt.axes(xlim=(-108, -104), ylim=(31,34))
     ax = plt.axes()
@@ -53,7 +53,13 @@ def animate(x0_data, y0_data, x1_data, y1_data):
     # call the animator.  blit=True means only re-draw the parts that have changed.
     anim = animation.FuncAnimation(fig, animate, init_func=init,
                                    frames=len(x0_data), interval=25, blit=True, repeat=False)
-    plt.show()
+    if savename != "":
+        print("generating gif output")
+        anim.save(savename+'.gif', writer='imagemagick', fps=60)
+        print("output complete: "+savename+".gif")
+    else:
+        plt.show()
+
 
 if __name__=='__main__':
     # fake data
