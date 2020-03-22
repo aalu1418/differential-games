@@ -43,10 +43,22 @@ def dXdt(x0, input):
     x_dot[4] = const[1]*np.cos(input[1])
     return x0+x_dot
 
-def phiToEvader(x):
-    angle = np.pi/2-np.arctan2(x[4]-x[1], x[3]-x[0]) #calculate angle to target
-    angleDiff = angle-x[2] #calculate difference between current heading and target heading
+def phiCalcSingleState(x):
+    angle = np.arctan2(x[4]-x[1], x[3]-x[0]) #calculate angle to target
+    # print("wrapped:  ", angle)
+    angleDiff = (np.pi/2-angle)-x[2] #calculate difference between current heading and target heading
     return angleDiff/(const[0]/const[2]) #calculate the ratio of the required rate
+
+def phiCalcThetaHistory(X):
+    if len(X) > 1:
+        angles = np.arctan2(X[:,4]-X[:,1], X[:,3]-X[:,0])
+        angle = np.unwrap(angles)[-1]
+        # print("unwrapped:", angle, " wrapped:  ", angles[-1])
+        angleDiff = (np.pi/2-angle)-X[-1, 2]
+        return angleDiff/(const[0]/const[2])
+    else:
+        return phiCalcSingleState(X[-1])
+
 
 def distance(x0, y0, x1, y1):
     return math.sqrt((x0-x1)**2+(y0-y1)**2)
@@ -58,6 +70,7 @@ def randomPsi(current, ii):
 
 
 if __name__=='__main__':
+    np.random.seed(1000)
     x0 = np.array([0, 0, 0, 1, 1]) # initial parameters
 
     X = np.array([x0])
@@ -65,7 +78,8 @@ if __name__=='__main__':
     ii = 0;
     psi = np.pi/2
     while True:
-        phi_calc = phiToEvader(X[-1])
+        # phi_calc = phiCalcSingleState(X[-1])
+        phi_calc = phiCalcThetaHistory(X)
         psi = randomPsi(psi, ii)
         input = np.array([phi_calc, psi])
         x_step = dXdt(X[-1], input)
