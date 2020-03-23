@@ -19,11 +19,18 @@ source: _[Fundamentals of Aerospace Navigation and Guidance](https://www.cambrid
 [Python/Scipy _solv_ivp_](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp)
 or could implement as a discrete time system...
 
-**Player strategies** (for choosing heading angles)
+**Player strategy ideas** (for choosing heading angles)
 - Minimize/maximize distance
 - Move in tangential direction of attacker
 - Knowing previous history of other player or not
 - Neural network / machine learning for creating strategy using sklearn libraries (maybe...)
+
+**Pursuer strategies**  
+- `phiCalcSingleState` - calculates the required `phi` to reach the evader using a single snapshot (issues with `arctan2` range wrap)
+- `phiCalcThetaHistory` - calculates the required `phi` to reach the evader using previous `theta` history (solves the `arctan2` wrap issue)
+
+**Evader strategies**  
+- `randomPsi` - random direction changes every 20 steps
 
 **Algorithms**
 1. Initialize with some set of parameters.
@@ -31,5 +38,6 @@ or could implement as a discrete time system...
 3. Choose heading angles using strategy.
 4. Repeat 2 and 3 until time runs our or collision occurs.
 
-**Current Bugs**
-- `arctan2` function has a range of `[-pi, pi]` which causes issues if the `|angle| > pi` (hence, the occasional wavy behavior when the pursuer misses)
+**Notes**
+- wavy behavior exhibited when using `phiCalcSingleState` is solved using `np.unwrap` with previous history in `phiCalcThetaHistory`
+  - not sure if this is a bug or not: whenever the pursuer misses, it makes a loop.
