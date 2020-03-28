@@ -17,7 +17,7 @@ def animate(x0_data, y0_data, x1_data, y1_data, savename = ""):
     plotcols_line = ["lightcoral", "cornflowerblue"]
     lines = []
     for index in range(2):
-        lobj = ax.plot([],[],color=plotcols_line[index])[0]
+        lobj = ax.plot([],[], linewidth=0.5, color=plotcols_line[index])[0]
         lines.append(lobj)
 
         lobj = ax.plot([],[],'o', color=plotcols[index])[0]

@@ -46,10 +46,7 @@ def dXdt(x0, input):
 #phi calculation using single state
 def phiSingleState(X):
     #only use most recent state
-    if len(X) < 1:
-        x = X[0]
-    else:
-        x = X[-1]
+    x = X[-1]
 
     angle = np.arctan2(x[4]-x[1], x[3]-x[0]) #calculate angle to target
     # print("wrapped:  ", angle)
@@ -58,14 +55,11 @@ def phiSingleState(X):
 
 #more robust phi calculation using angle history + unwrapping
 def phiThetaHistory(X):
-    if len(X) > 1:
-        angles = np.arctan2(X[:,4]-X[:,1], X[:,3]-X[:,0]) #calculate all angles to target
-        angle = np.unwrap(angles)[-1] #use unwrap to create a continuous array and get last element
-        # print("unwrapped:", angle, " wrapped:  ", angles[-1])
-        angleDiff = (np.pi/2-angle)-X[-1, 2] #calculate the angle difference
-        return angleDiff/(const[0]/const[2]) #calculate the required phi
-    else:
-        return phiSingleState(X) #return required phi for first calculation
+    angles = np.arctan2(X[:,4]-X[:,1], X[:,3]-X[:,0]) #calculate all angles to target
+    angle = np.unwrap(angles)[-1] #use unwrap to create a continuous array and get last element
+    # print("unwrapped:", angle, " wrapped:  ", angles[-1])
+    angleDiff = (np.pi/2-angle)-X[-1, 2] #calculate the angle difference
+    return angleDiff/(const[0]/const[2]) #calculate the required phi
 
 # distance formula
 def distance(x0, y0, x1, y1):
@@ -80,17 +74,19 @@ def psiRandom(psi, ii, X):
 #avoid pursuer by turning 90 degrees from pursuer
 def psiTurn90(psi, ii, X):
     #only use most recent state
-    if len(X) < 1:
-        x = X[0]
+    x = X[-1]
+    if len(X) < 2 :
+        x_prev = x
     else:
-        x = X[-1]
+        x_prev = X[-2]
 
     if ii%5 == 0: #every 5 steps calculate a new psi
         # print(np.pi/2 - np.arctan2(x[4]-x[1], x[3]-x[0]), x[2])
-        theta = x[2]%(2*np.pi) #calculate the current pursuer theta (mod 2pi for consistency)
-        pursuerHeading = np.pi/2 - np.arctan2(x[4]-x[1], x[3]-x[0]) # calculate the angle from pursuer to target
-        turnDirection = np.sign(pursuerHeading - theta) #get the sign of the difference to determine which direction to move
-        psi = pursuerHeading + np.pi/2*turnDirection #calculate new psi of evader
+        # theta = x[2]%(2*np.pi) #calculate the current pursuer theta (mod 2pi for consistency) - invalid because evader does not have access to pursuer actual heading (only location history)
+        headingPrev = np.pi/2 - np.arctan2(x_prev[4]-x_prev[1], x_prev[3]-x_prev[0]) #calculate previous angle
+        headingCurrent = np.pi/2 - np.arctan2(x[4]-x[1], x[3]-x[0]) # calculate the angle from pursuer to target
+        turnDirection = np.sign(headingCurrent-headingPrev) #get the sign of the difference to determine which direction to move
+        psi = headingCurrent + np.pi/2*turnDirection #calculate new psi of evader
     return psi
 
 #run simulation using specied phi function and psi function
