@@ -43,62 +43,108 @@ def dXdt(x0, input):
     x_dot[4] = const[1]*np.cos(input[1])
     return x0+x_dot
 
-def phiCalcSingleState(x):
+#phi calculation using single state
+def phiSingleState(X):
+    #only use most recent state
+    if len(X) < 1:
+        x = X[0]
+    else:
+        x = X[-1]
+
     angle = np.arctan2(x[4]-x[1], x[3]-x[0]) #calculate angle to target
     # print("wrapped:  ", angle)
     angleDiff = (np.pi/2-angle)-x[2] #calculate difference between current heading and target heading
     return angleDiff/(const[0]/const[2]) #calculate the ratio of the required rate
 
-def phiCalcThetaHistory(X):
+#more robust phi calculation using angle history + unwrapping
+def phiThetaHistory(X):
     if len(X) > 1:
-        angles = np.arctan2(X[:,4]-X[:,1], X[:,3]-X[:,0])
-        angle = np.unwrap(angles)[-1]
+        angles = np.arctan2(X[:,4]-X[:,1], X[:,3]-X[:,0]) #calculate all angles to target
+        angle = np.unwrap(angles)[-1] #use unwrap to create a continuous array and get last element
         # print("unwrapped:", angle, " wrapped:  ", angles[-1])
-        angleDiff = (np.pi/2-angle)-X[-1, 2]
-        return angleDiff/(const[0]/const[2])
+        angleDiff = (np.pi/2-angle)-X[-1, 2] #calculate the angle difference
+        return angleDiff/(const[0]/const[2]) #calculate the required phi
     else:
-        return phiCalcSingleState(X[-1])
+        return phiSingleState(X) #return required phi for first calculation
 
-
+# distance formula
 def distance(x0, y0, x1, y1):
     return math.sqrt((x0-x1)**2+(y0-y1)**2)
 
-def randomPsi(current, ii):
-    if ii%20 == 0:
-        current += np.pi*(np.random.rand()-0.5)
-    return current
+#generate random psi direction
+def psiRandom(psi, ii, X):
+    if ii%20 == 0: #every 20 steps generate a random psi
+        psi += np.pi*(np.random.rand()-0.5)
+    return psi
 
+#avoid pursuer by turning 90 degrees from pursuer
+def psiTurn90(psi, ii, X):
+    #only use most recent state
+    if len(X) < 1:
+        x = X[0]
+    else:
+        x = X[-1]
 
-if __name__=='__main__':
-    np.random.seed(1000)
-    x0 = np.array([0, 0, 0, 1, 1]) # initial parameters
+    if ii%5 == 0: #every 5 steps calculate a new psi
+        # print(np.pi/2 - np.arctan2(x[4]-x[1], x[3]-x[0]), x[2])
+        theta = x[2]%(2*np.pi) #calculate the current pursuer theta (mod 2pi for consistency)
+        pursuerHeading = np.pi/2 - np.arctan2(x[4]-x[1], x[3]-x[0]) # calculate the angle from pursuer to target
+        turnDirection = np.sign(pursuerHeading - theta) #get the sign of the difference to determine which direction to move
+        psi = pursuerHeading + np.pi/2*turnDirection #calculate new psi of evader
+    return psi
 
+#run simulation using specied phi function and psi function
+def runSim(x0, phiFunc, psiFunc, randomPsi=False, output=True):
     X = np.array([x0])
-    # for ii in np.arange(20):
+
     ii = 0;
-    psi = np.pi/2
+    psi = np.pi*2*np.random.rand() if randomPsi else np.pi/2 #random psi depending on condition
     while True:
-        # phi_calc = phiCalcSingleState(X[-1])
-        phi_calc = phiCalcThetaHistory(X)
-        psi = randomPsi(psi, ii)
-        input = np.array([phi_calc, psi])
-        x_step = dXdt(X[-1], input)
+        phi = phiFunc(X) #calculate phi
+        psi = psiFunc(psi, ii, X) #calculate psi
+        input = np.array([phi, psi])
+        x_step = dXdt(X[-1], input) #input into step
         X = np.append(X, [x_step], axis=0)
         ii += 1
 
         #exit condition if pursuer catches evader
         if distance(X[-1,0], X[-1,1], X[-1,3], X[-1,4]) < 1e-2:
-            print("steps:", ii)
+            if output:
+                print("Winner: Pursuer - steps:", ii)
             break
+        #exit condition if too many steps (equivalent of running out of gas)
         if ii >= 10000:
-            print("max steps:", ii)
+            if output:
+                print("Winner: Evader - max steps:", ii)
             break
+    return X
 
+def runAllSim(x0):
+    phiFuncs = [phiSingleState, phiThetaHistory]
+    psiFuncs = [psiRandom, psiTurn90]
+
+    for phiFunc in phiFuncs:
+        for psiFunc in psiFuncs:
+            X = runSim(x0, phiFunc, psiFunc, randomPsi=True, output=False)
+            if len(X) < 1000:
+                winner = "Pursuer - "+str(len(X))+" steps"
+            else:
+                winner = "Evader"
+            print(phiFunc.__name__, "vs", psiFunc.__name__,":", winner)
+
+if __name__=='__main__':
+    # np.random.seed(1000)
+    x0 = np.array([0, 0, 0, 1, 1]) # initial parameters
+    # runAllSim(x0) #enable to run all simulations in comparison mode
+
+    X = runSim(x0, phiThetaHistory, psiTurn90)
+
+    # # plot non-animated figure
     # plt.figure()
     # plt.plot(X[:,0], X[:,1], 'r', X[:,3], X[:,4], 'b')
     # plt.plot(X[-1,0], X[-1,1], 'ro', X[-1,3], X[-1,4], 'bo')
     # plt.axis('equal')
     # plt.show()
 
-    # animate.animate(X[:,0], X[:,1], X[:,3], X[:,4], "homChauffeur")
-    animate.animate(X[:,0], X[:,1], X[:,3], X[:,4])
+    # animate.animate(X[:,0], X[:,1], X[:,3], X[:,4], "homChauffeur") #for rendering to .gif file
+    animate.animate(X[:,0], X[:,1], X[:,3], X[:,4]) #who figure
