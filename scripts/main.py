@@ -94,7 +94,7 @@ def psiTurn90(psi, ii, X):
     return psi
 
 #run simulation using specied phi function and psi function
-def runSim(x0, phiFunc, psiFunc, randomPsi=False, output=True):
+def runSim(x0, phiFunc, psiFunc, randomPsi=True, output=True):
     X = np.array([x0])
 
     ii = 0;
@@ -126,7 +126,7 @@ def runAllSim(x0):
     for phiFunc in phiFuncs:
         for psiFunc in psiFuncs:
             X = runSim(x0, phiFunc, psiFunc, randomPsi=True, output=False)
-            if len(X) < 1000:
+            if len(X) < 10000:
                 winner = "Pursuer - "+str(len(X))+" steps"
             else:
                 winner = "Evader"
@@ -138,6 +138,7 @@ if __name__=='__main__':
     # runAllSim(x0) #enable to run all simulations in comparison mode
 
     X = runSim(x0, phiThetaHistory, psiTurn90)
+    # X = runSim(x0, phiThetaHistory, psiTurn90, randomPsi=False)
 
     # # plot non-animated figure
     # plt.figure()
@@ -146,5 +147,5 @@ if __name__=='__main__':
     # plt.axis('equal')
     # plt.show()
 
-    # animate.animate(X[:,0], X[:,1], X[:,3], X[:,4], "homChauffeur") #for rendering to .gif file
-    animate.animate(X[:,0], X[:,1], X[:,3], X[:,4]) #who figure
+    # animate.animate(X[:,0], X[:,1], X[:,3], X[:,4], "homChauffeur") #for rendering to .gif file (currently not working)
+    animate.animate(X[:,0], X[:,1], X[:,3], X[:,4]) #display animated figure
