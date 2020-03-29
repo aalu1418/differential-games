@@ -143,5 +143,5 @@ if __name__=='__main__':
     # plt.axis('equal')
     # plt.show()
 
-    # animate.animate(X[:,0], X[:,1], X[:,3], X[:,4], "homChauffeur") #for rendering to .gif file (currently not working)
-    animate.animate(X[:,0], X[:,1], X[:,3], X[:,4]) #display animated figure
+    animate.animate(X[:,0], X[:,1], X[:,3], X[:,4], "homChauffeur") #for rendering to .mp4 file
+    # animate.animate(X[:,0], X[:,1], X[:,3], X[:,4]) #display animated figure

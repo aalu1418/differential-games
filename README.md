@@ -1,17 +1,15 @@
 # Differential Games
 
-Simulating differential games (specifically pursuit/evasion scenarios) using python.
+Simulating differential games (specifically pursuit/evasion scenarios) using python.  
+![](./figures/example.gif)
 
 ### Homicidal Chauffeur Problem - 2 Body Pursuit/Evasion
-
-<img src="./figures/homicidal_chauffeur/homChauffeur.gif" height=200/>
-
 **Differential equations**
 
 <div style="display:flex;flex-direction:row">
-<img src="./figures/homicidal_chauffeur/system.png" height=200/>
-<div style="display:flex;flex-direction:column"><img src="./figures/homicidal_chauffeur/driver.png" width=100/>
-<img src="./figures/homicidal_chauffeur/pedestrian.png" width=100/> </div>
+<img src="./figures/homChauffeur/system.png" height=200/>
+<div style="display:flex;flex-direction:column"><img src="./figures/homChauffeur/driver.png" width=100/>
+<img src="./figures/homChauffeur/pedestrian.png" width=100/> </div>
 </div>
 
 source: _[Fundamentals of Aerospace Navigation and Guidance](https://www.cambridge.org/core/books/fundamentals-of-aerospace-navigation-and-guidance/introduction-to-differential-games/60EE260EF7F997C3A7E1E97C6FCD8BB1)_ by Kabamba & Girard
@@ -37,7 +35,7 @@ or could implement as a discrete time system...
 - `psiRandom` - random direction changes every 20 steps
 - `psiTurn90` - every 5 steps, calculates new `psi` that is 90 degrees from a line drawn from pursuer to evader. Left vs right turn is handled depending on pursuer heading.
 
-**Current winning strategy:** `psiTurn90` beats all pursuer methods
+[**Current winning strategy:**](./figures/homChauffeur/homChauffeur.mp4) `psiTurn90` beats all pursuer methods
 
 **Algorithms**
 
@@ -53,4 +51,4 @@ or could implement as a discrete time system...
 - Running instructions (overall run with `python3 main.py`):
   - `runAllSim` runs all methods against each other and outputs results
   - `runSim` runs a specific method
-  - `animate.animate` allows for animated figure or generating a gif
+  - `animate.animate` allows for animated figure or generating a mp4

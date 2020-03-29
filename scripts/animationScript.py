@@ -54,10 +54,10 @@ def animate(x0_data, y0_data, x1_data, y1_data, savename = ""):
     anim = animation.FuncAnimation(fig, animate, init_func=init,
                                    frames=len(x0_data), interval=25, blit=True, repeat=False)
     if savename != "":
-        print("generating gif output - currently not working")
-        return
-        anim.save(savename+'.gif', writer='imagemagick', fps=60)
-        print("output complete: "+savename+".gif")
+        print("generating mp4 output")
+        # retusrn
+        anim.save('../figures/'+savename+'/'+savename+'.mp4', fps=60)
+        print("output complete: "+savename+".mp4")
     else:
         plt.show()
 
