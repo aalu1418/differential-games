@@ -1,7 +1,6 @@
 # Differential Games
 
 Simulating differential games (specifically pursuit/evasion scenarios) using python.  
-![](./figures/example.gif)
 
 ### Homicidal Chauffeur Problem - 2 Body Pursuit/Evasion
 **Differential equations**
@@ -51,4 +50,4 @@ or could implement as a discrete time system...
 - Running instructions (overall run with `python3 main.py`):
   - `runAllSim` runs all methods against each other and outputs results
   - `runSim` runs a specific method
-  - `animate.animate` allows for animated figure or generating a mp4
+  - `animate.animate` allows for animated python figure
