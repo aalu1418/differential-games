@@ -28,13 +28,15 @@ or could implement as a discrete time system...
 
 - `phiSingleState` - calculates the required `phi` to reach the evader using a single snapshot (issues with `arctan2` range wrap)
 - `phiThetaHistory` - calculates the required `phi` to reach the evader using previous `theta` history (solves the `arctan2` wrap issue)
+- `phiPerturb` - simple method based on `phiThetaHistory` but handles a detected loop by perturbing the pursuer `phi`
 
 **Evader strategies**
 
 - `psiRandom` - random direction changes every 20 steps
 - `psiTurn90` - every 5 steps, calculates new `psi` that is 90 degrees from a line drawn from pursuer to evader. Left vs right turn is handled depending on pursuer heading.
 
-[**Current winning strategy:**](./figures/homChauffeur/homChauffeur.mp4) `psiTurn90` beats all pursuer methods
+**Current winning strategy:** `phiPerturb` beats all pursuer methods  
+_Caveat: this may be because of a flaw in the `psiTurn90` algorithm_
 
 **Algorithms**
 
@@ -51,3 +53,4 @@ or could implement as a discrete time system...
   - `runAllSim` runs all methods against each other and outputs results
   - `runSim` runs a specific method
   - `animate.animate` allows for animated python figure
+- To-Do: rewrite using object oriented programming

@@ -61,9 +61,21 @@ def phiThetaHistory(X):
     angleDiff = (np.pi/2-angle)-X[-1, 2] #calculate the angle difference
     return angleDiff/(const[0]/const[2]) #calculate the required phi
 
+#peturbation of phi if a loop is detected (using distance formula and minimum)
+def phiPerturb(X):
+    phi = phiThetaHistory(X)
+
+    if len(X) > 1 :
+        diff = distance(X[-100:-1, 0], X[-100:-1, 1], X[-1,0], X[-1,1])
+        if (np.amin(diff) < 5e-3 and len(X)%10 == 0): #if there is a previous point that is close (ie a loop of some sort, perturb the system)
+            # print(np.amin(diff))
+            phi = -phi
+
+    return phi
+
 # distance formula
 def distance(x0, y0, x1, y1):
-    return math.sqrt((x0-x1)**2+(y0-y1)**2)
+    return np.sqrt((x0-x1)**2+(y0-y1)**2)
 
 #generate random psi direction
 def psiRandom(psi, ii, X):
@@ -116,7 +128,7 @@ def runSim(x0, phiFunc, psiFunc, randomPsi=True, output=True):
     return X
 
 def runAllSim(x0):
-    phiFuncs = [phiSingleState, phiThetaHistory]
+    phiFuncs = [phiSingleState, phiThetaHistory, phiPerturb]
     psiFuncs = [psiRandom, psiTurn90]
 
     for phiFunc in phiFuncs:
@@ -131,9 +143,9 @@ def runAllSim(x0):
 if __name__=='__main__':
     # np.random.seed(1000)
     x0 = np.array([0, 0, 0, 1, 1]) # initial parameters
-    # runAllSim(x0) #enable to run all simulations in comparison mode
+    runAllSim(x0) #enable to run all simulations in comparison mode
 
-    X = runSim(x0, phiThetaHistory, psiTurn90)
+    # X = runSim(x0, phiPerturb, psiTurn90)
     # X = runSim(x0, phiThetaHistory, psiTurn90, randomPsi=False)
 
     # # plot non-animated figure
@@ -143,4 +155,4 @@ if __name__=='__main__':
     # plt.axis('equal')
     # plt.show()
 
-    animate.animate(X[:,0], X[:,1], X[:,3], X[:,4]) #display animated figure
+    # animate.animate(X[:,0], X[:,1], X[:,3], X[:,4]) #display animated figure
